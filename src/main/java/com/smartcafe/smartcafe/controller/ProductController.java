@@ -1,39 +1,33 @@
 package com.smartcafe.smartcafe.controller;
 
-import com.smartcafe.smartcafe.model.Product;
-import com.smartcafe.smartcafe.service.ProductService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import com.smartcafe.smartcafe.dto.ProductRequestDTO;
+import com.smartcafe.smartcafe.dto.ProductResponseDTO;
+
+import com.smartcafe.smartcafe.service.ProductService;
+
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductService service;
+    private final ProductService productService;
 
-    public ProductController(ProductService service) {
-        this.service = service;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PostMapping
-    public Product create(@RequestBody Product product) {
-        return service.create(product);
+    public ProductResponseDTO createProduct(@RequestBody @Valid ProductRequestDTO dto) {
+        return productService.createProduct(dto);
     }
 
     @GetMapping
-    public List<Product> getAll() {
-        return service.findAll();
+    public List<ProductResponseDTO> getAllProducts() {
+        return productService.getAllProducts();
     }
-
-    @GetMapping("/{id}")
-    public Product getById(@PathVariable Long id) {
-        return service.findById(id);
-    }
-
-    @DeleteMapping
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
-    }
-
 }
