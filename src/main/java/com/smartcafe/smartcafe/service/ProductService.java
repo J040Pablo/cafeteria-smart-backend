@@ -45,4 +45,41 @@ public class ProductService {
                 ))
                 .toList();
     }
+
+    public ProductResponseDTO getById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        return new ProductResponseDTO(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getStock()
+        );
+    }
+
+    public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setStock(dto.getStock());
+
+        Product updateProduct = productRepository.save(product);
+
+        return new ProductResponseDTO(
+                updateProduct.getId(),
+                updateProduct.getName(),
+                updateProduct.getPrice(),
+                updateProduct.getStock()
+        );
+    }
+
+    public void delete(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        productRepository.delete(product);
+    }
 }

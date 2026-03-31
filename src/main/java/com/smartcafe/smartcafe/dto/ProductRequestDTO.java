@@ -10,7 +10,7 @@ public class ProductRequestDTO {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank
+    @NotNull
     @Positive(message = "Price must be greater than 0")
     private Double price;
 
