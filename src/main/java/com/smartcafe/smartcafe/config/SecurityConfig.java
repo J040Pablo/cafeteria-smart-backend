@@ -6,24 +6,34 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity // Habilita a segurança personalizada do Spring
+@EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtFilter jwtFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http ) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                // Desabilita o CSRF pois usaremos JWT (Tokens ), não Cookies
                 .csrf(csrf -> csrf.disable())
 
-                // Define que a API não guardará estado (Stateless), padrão para APIs REST
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // Por enquanto, libera todos os acessos para podermos testar o Dia 1
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 }
