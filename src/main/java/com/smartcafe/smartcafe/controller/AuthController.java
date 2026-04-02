@@ -1,6 +1,7 @@
 package com.smartcafe.smartcafe.controller;
 
 import com.smartcafe.smartcafe.dto.LoginRequestDTO;
+import com.smartcafe.smartcafe.dto.RegisterRequestDTO;
 import com.smartcafe.smartcafe.service.AuthService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,12 @@ public class AuthController {
 
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestBody RegisterRequestDTO dto) {
+        authService.register(dto);
+        return "Usuário criado com sucesso";
     }
 
     @PostMapping("/login")

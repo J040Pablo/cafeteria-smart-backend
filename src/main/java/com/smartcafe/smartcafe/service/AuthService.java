@@ -1,6 +1,7 @@
 package com.smartcafe.smartcafe.service;
 
 import com.smartcafe.smartcafe.dto.LoginRequestDTO;
+import com.smartcafe.smartcafe.dto.RegisterRequestDTO;
 import com.smartcafe.smartcafe.model.User;
 import com.smartcafe.smartcafe.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,28 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void register(RegisterRequestDTO dto) {
+
+        // 1. Verifica se já existe
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Usuário já existe");
+        }
+
+        // 2. Cria usuário
+        User user = new User();
+        user.setEmail(dto.getEmail());
+
+        // 🔐 criptografa senha
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        // 👤 define role
+        user.setRole("USER"); // sempre USER no register
+
+        // 3. Salva no banco
+        userRepository.save(user);
+    }
+
+
     public String login(LoginRequestDTO dto) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
@@ -32,4 +55,6 @@ public class AuthService {
 
         return jwtService.generateToken(user.getEmail());
     }
+
+
 }
