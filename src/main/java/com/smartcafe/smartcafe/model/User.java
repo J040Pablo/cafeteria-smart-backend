@@ -13,6 +13,9 @@ public class User {
     private String email;
     private String password;
 
+    @Column(nullable = false)
+    private String role;
+
     // gttrs e settrs a
 
 
@@ -33,6 +36,14 @@ public class User {
     }
     public String getPassword() {
         return password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public void setPassword(String password) {
